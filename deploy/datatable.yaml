@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: datatable
+  name: datatable
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: datatable
+  template:
+    metadata:
+      labels:
+        app: datatable
+    spec:
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+      containers:
+        - image: ycr.yonyoucloud.com/base/datatable:v1.0-abcdef
+          name: datatable
+          command:
+            - "/datatable"
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: TZ
+              value: "Asia/Shanghai"
+          ports:
+            - containerPort: 8889
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: 8889
+            initialDelaySeconds: 6
+            periodSeconds: 3
+          readinessProbe:
+            tcpSocket:
+              port: 8889
+            initialDelaySeconds: 4
+            periodSeconds: 2
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 1000m
+              memory: 512Mi
