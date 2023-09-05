@@ -2,7 +2,7 @@
 error-level: "warn"
 
 # 绑定端口服务
-host: "localhost:8889"
+host: "0.0.0.0:8889"
 
 # 跨域允许的源
 allow-origin: ["http://localhost:8889"]

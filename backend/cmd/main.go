@@ -78,7 +78,7 @@ func main() {
 	rs := routes.New(ms)
 
 	webRoot := router.Group(cfg.WebRoot)
-	rs.AddStatic(webRoot, cfg.Host, cfg.StaticDir)
+	rs.AddStatic(webRoot, cfg.StaticDir)
 
 	apiV1 := router.Group("/api/v1")
 	rs.AddList(apiV1)
