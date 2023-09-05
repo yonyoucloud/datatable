@@ -22,7 +22,7 @@ HOST_OS = $(shell which go >/dev/null 2>&1 && go env GOOS)
 ARCH ?= $(HOST_ARCH)
 OS ?= $(HOST_OS)
 # 打arm包时强制一下OS，否则Mac下生成的无法在linux arm中运行
-#OS = linux
+OS = linux
 ifeq ($(ARCH),)
     $(error mandatory variable ARCH is empty, either set it when calling the command or make sure 'go env GOARCH' works)
 endif

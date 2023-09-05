@@ -19,4 +19,4 @@ echo "Asia/Shanghai" > /etc/timezone
 
 WORKDIR /
 
-CMD ["cd", "/datatable", "&&", "./datatable"]
+CMD /bin/sh -c "cd /datatable && ./datatable"
