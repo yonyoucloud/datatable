@@ -15,7 +15,7 @@ import VXETable, { config } from 'vxe-table'
 import FilterComplex from './components/FilterComplex.vue'
 import axios from 'axios'
 
-const baseURL = window.CONFIG && window.CONFIG.apiHost || 'http://localhost:8080/'
+const baseURL = window.CONFIG && window.CONFIG.apiHost || 'http://localhost:8889/'
 
 const openMessage = (options) => {
   VXETable.modal.message(options)

@@ -29,3 +29,6 @@ coverage
 
 .vscode
 *config.yaml
+deploy/amd64
+deploy/arm64
+deploy/web

@@ -2,13 +2,13 @@
 error-level: "warn"
 
 # 绑定端口服务
-host: "localhost:8080"
+host: "localhost:8889"
 
 # 跨域允许的源
 allow-origin: ["http://localhost:5173"]
 
 # 静态资源路径
-static-dir: "../deploy/datatable/web"
+static-dir: "../deploy/web"
 
 # 前端站点根路径
 web-root: "/web"

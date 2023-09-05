@@ -8,7 +8,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 export default defineConfig({
   base: '/web/',
   build: {
-    outDir: 'deploy/datatable/web' // 打包文件的输出目录
+    outDir: './deploy/web' // 打包文件的输出目录
   },
   plugins: [
     vue(),

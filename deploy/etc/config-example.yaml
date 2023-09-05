@@ -2,10 +2,10 @@
 error-level: "warn"
 
 # 绑定端口服务
-host: "localhost:8080"
+host: "localhost:8889"
 
 # 跨域允许的源
-allow-origin: ["http://localhost:8080"]
+allow-origin: ["http://localhost:8889"]
 
 # 静态资源路径
 static-dir: "./web"

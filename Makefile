@@ -22,7 +22,7 @@ HOST_OS = $(shell which go >/dev/null 2>&1 && go env GOOS)
 ARCH ?= $(HOST_ARCH)
 OS ?= $(HOST_OS)
 # 打arm包时强制一下OS，否则Mac下生成的无法在linux arm中运行
-OS = linux
+#OS = linux
 ifeq ($(ARCH),)
     $(error mandatory variable ARCH is empty, either set it when calling the command or make sure 'go env GOARCH' works)
 endif
@@ -50,29 +50,29 @@ clean-image: ## 删除本地镜像
 	echo "removing old image $(REGISTRY)/datatable:*"
 	@docker rmi `docker images | grep "$(REGISTRY)/datatable" | awk '{print $$3}'` || true
 
-.PHONY: build
-build:  ## 编译 datatable
+.PHONY: build-be
+build-be:  ## 编译 datatable 后端
 	@cd backend && \
 		rm -rf ./deploy/$(ARCH)/datatable && \
 		go mod tidy && \
 		CGO_ENABLED=0 \
 		GOOS=$(OS) \
 		GOARCH=$(ARCH) \
-		go build -ldflags "$(datatable_LDFLAGS)" -o ./deploy/$(ARCH)/datatable ./cmd/datatable
+		go build -ldflags "$(datatable_LDFLAGS)" -o ../deploy/$(ARCH)/datatable ./cmd
 
-.PHONY: build-encrypt
-build-encrypt:  ## 编译 datatable encrype
-	@rm -rf ./deploy/$(ARCH)/encrype && \
+.PHONY: build-fe
+build-fe:  ## 编译 datatable 前端
+	@npm run build
+
+.PHONY: run-be
+run-be:  ## 运行 datatable 后端
+	@cd backend && \
 		go mod tidy && \
-		CGO_ENABLED=0 \
-		GOOS=$(OS) \
-		GOARCH=$(ARCH) \
-		go build -ldflags "$(datatable_LDFLAGS)" -o ./deploy/$(ARCH)/encrypt ./cmd/encrypt
+		go run -ldflags "$(datatable_LDFLAGS)" ./cmd
 
-.PHONY: run
-run:  ## 运行 datatable
-	@go mod tidy && \
-		go run -ldflags "$(datatable_LDFLAGS)" ./cmd/datatable
+.PHONY: run-fe
+run-fe:  ## 运行 datatable 前端
+	@npm run dev
 
 .PHONY: deploy
 deploy:  ## 部署 datatable

@@ -10,6 +10,7 @@ import (
 	"github.com/yonyoucloud/datatable/pkg/config"
 	"github.com/yonyoucloud/datatable/pkg/modules"
 	"github.com/yonyoucloud/datatable/pkg/routes"
+	"github.com/yonyoucloud/datatable/pkg/version"
 )
 
 func init() {
@@ -24,6 +25,8 @@ func main() {
 		FullTimestamp: true,
 	})
 	log.SetOutput(os.Stdout)
+
+	log.Warnln(version.VersionInfo())
 
 	execPath, err := os.Getwd()
 	if err != nil {
