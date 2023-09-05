@@ -80,8 +80,8 @@ func main() {
 	webRoot := router.Group(cfg.WebRoot)
 	rs.AddStatic(webRoot, cfg.StaticDir)
 
-	apiV1 := router.Group("/api/v1")
-	rs.AddList(apiV1)
+	api := router.Group("/api")
+	rs.AddV1(api)
 
 	router.Run(cfg.Host)
 }

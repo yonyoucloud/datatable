@@ -73,7 +73,7 @@ let filterOptions = new Map()
 const getTableContents = async () => {
   try {
     loadingContents.value = true
-    const response = await axios.post(baseURL + 'api/v1/list/table/contents/' + table.value, {
+    const response = await axios.post(baseURL + 'api/v1/get/table/contents/' + table.value, {
       page_size: pagerConfig.value.pageSize,
       current_page: pagerConfig.value.currentPage,
       sort_field: sortField.value,
@@ -153,7 +153,7 @@ const gridOptions = reactive({
 const getTables = async () => {
   try {
     loadingTables.value = true
-    const response = await axios.get(baseURL + 'api/v1/list/tables')
+    const response = await axios.get(baseURL + 'api/v1/get/tables')
     const data = response.data.data
     for (let index = 0; index < data.length; index++) {
       tables.push({
@@ -178,7 +178,7 @@ const changeTable = () => {
 const getFields = async () => {
   try {
     loadingTables.value = true
-    const response = await axios.get(baseURL + 'api/v1/list/table/fields/' + table.value)
+    const response = await axios.get(baseURL + 'api/v1/get/table/fields/' + table.value)
     const data = response.data.data
     tableColumns.value = []
     tableColumns.value.push({ type: 'seq', title: '序号', width: '60', fixed: 'left' })
