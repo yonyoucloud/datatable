@@ -83,6 +83,38 @@ func (ms *Modules) ContentsTable(c *gin.Context) {
 	ms.response(0, "", data, c)
 }
 
+func (ms *Modules) StatTable(c *gin.Context) {
+	name := c.Param("name")
+
+	if name == "" {
+		ms.response(1000, "表名不能为空", nil, c)
+		return
+	}
+
+	if !ms.validateTable(name) {
+		ms.response(1002, "该表不允许查询", nil, c)
+		return
+	}
+
+	type Payload struct {
+		Property string `json:"property"`
+		Filter   string `json:"filter"`
+	}
+	var payload Payload
+	if err := c.ShouldBindJSON(&payload); err != nil {
+		ms.response(1001, "参数解析错误", err.Error(), c)
+		return
+	}
+
+	data, err := ms.model.StatTable(name, payload.Property, payload.Filter)
+	if err != nil {
+		ms.response(100, "数据库查询报错", err.Error(), c)
+		return
+	}
+
+	ms.response(0, "", data, c)
+}
+
 func (ms *Modules) validateTable(name string) bool {
 	if name == "" {
 		return false

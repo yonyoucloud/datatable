@@ -1,40 +1,44 @@
-# datatable
+# 数据表格（datatable）
 
-This template should help get you started developing with Vue 3 in Vite.
+数据库`查询展示`工具。
 
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
+### 1、构建前端
 
 ```sh
-npm install
+make install-fe build-fe
 ```
 
-### Compile and Hot-Reload for Development
+### 2、构建后端
 
 ```sh
-npm run dev
+make build-be
 ```
 
-### Type-Check, Compile and Minify for Production
+### 3、修改配置
 
 ```sh
-npm run build
+cd ./deploy
+cp -rp config-example.yaml config.yaml
+
+# 修改 config.yaml
+mysql.master 修改正确数据库链接信息
+```
+
+### 4、运行服务
+
+```sh
+npm run
+```
+
+### 5、生成前端配置文件，访问如下地址
+
+```sh
+# host 参数为 api 接口地址，可以设置为当前服务访问地址
+curl http://${IP}:8889/api/v1/create/config/js?host=http://${IP}:8889/
+```
+
+### 6、系统入口地址
+
+```sh
+http://${IP}:8889/web
 ```

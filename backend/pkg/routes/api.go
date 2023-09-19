@@ -9,4 +9,5 @@ func (rs *Routes) AddV1(rg *gin.RouterGroup) {
 	v1Group.GET("/get/tables", rs.modules.ShowTables)
 	v1Group.GET("/get/table/fields/:name", rs.modules.DescTable)
 	v1Group.POST("/get/table/contents/:name", rs.modules.ContentsTable)
+	v1Group.POST("/get/table/stat/:name", rs.modules.StatTable)
 }

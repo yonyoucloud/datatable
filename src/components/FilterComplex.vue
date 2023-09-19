@@ -1,16 +1,36 @@
 <template>
     <div class="my-filter-complex">
       <div class="my-fc-type">
-        <vxe-radio v-model="demo1.option.data.type" name="fType" label="IN">包含</vxe-radio>
-        <vxe-radio v-model="demo1.option.data.type" name="fType" label="=">等于</vxe-radio>
-        <vxe-radio v-model="demo1.option.data.type" name="fType" label="<>">不等于</vxe-radio>
-        <vxe-radio v-model="demo1.option.data.type" name="fType" label=">">大于</vxe-radio>
-        <vxe-radio v-model="demo1.option.data.type" name="fType" label=">=">大于或等于</vxe-radio>
-        <vxe-radio v-model="demo1.option.data.type" name="fType" label="<">小于</vxe-radio>
-        <vxe-radio v-model="demo1.option.data.type" name="fType" label="<=">小于或等于</vxe-radio>
+        <vxe-radio v-model="myFilter.option.data.type" name="fType" label="IN">包含</vxe-radio>
+        <vxe-radio v-model="myFilter.option.data.type" name="fType" label="=">等于</vxe-radio>
+        <vxe-radio v-model="myFilter.option.data.type" name="fType" label="<>">不等于</vxe-radio>
+        <vxe-radio v-model="myFilter.option.data.type" name="fType" label=">">大于</vxe-radio>
+        <vxe-radio v-model="myFilter.option.data.type" name="fType" label=">=">大于或等于</vxe-radio>
+        <vxe-radio v-model="myFilter.option.data.type" name="fType" label="<">小于</vxe-radio>
+        <vxe-radio v-model="myFilter.option.data.type" name="fType" label="<=">小于或等于</vxe-radio>
+        <vxe-radio v-model="myFilter.option.data.type" name="fType" label="RANGE">范围</vxe-radio>
       </div>
       <div class="my-fc-name">
-        <vxe-input v-model="demo1.option.data.name" type="text" placeholder="请输入名称" @input="changeOptionEvent()"></vxe-input>
+        <vxe-form :data="myFilter.option.data">
+          <vxe-form-item title="值1">
+            <template #default="{ data }">
+              <vxe-input v-model="data.value1" type="text" size="mini" placeholder="请输入值1" @input="changeOptionEvent()"></vxe-input>
+            </template>
+          </vxe-form-item>
+          <vxe-form-item title="值2">
+            <template #default="{ data }">
+              <vxe-input v-model="data.value2" type="text" size="mini" placeholder="请输入值2" @input="changeOptionEvent()"></vxe-input>
+            </template>
+          </vxe-form-item>
+          <vxe-form-item :title-prefix="{ icon: 'vxe-icon-warning-triangle' }">
+            <template #title>
+              <span style="color: red;">开启该字段统计（必须是时间字段）</span>
+            </template>
+            <template #default="{ data }">
+              <vxe-switch v-model="data.openstat" open-label="是" close-label="否"></vxe-switch>
+            </template>
+          </vxe-form-item>
+        </vxe-form>
       </div>
       <div class="my-fc-footer">
         <vxe-button status="primary" @click="confirmEvent">确认</vxe-button>
@@ -29,7 +49,7 @@
       params: Object as PropType<VxeGlobalRendererHandles.RenderFilterParams>
     },
     setup (props) {
-      const demo1 = reactive({
+      const myFilter = reactive({
         option: null as any
       })
   
@@ -38,16 +58,16 @@
         if (params) {
           const { column } = params
           const option = column.filters[0]
-          demo1.option = option
+          myFilter.option = option
         }
       }
   
       const changeOptionEvent = () => {
         const { params } = props
-        const { option } = demo1
+        const { option } = myFilter
         if (params && option) {
           const { $panel } = params
-          const checked = !!option.data.name
+          const checked = !!option.data.value1
           $panel.changeOption(null, checked, option)
         }
       }
@@ -71,7 +91,7 @@
       load()
   
       return {
-        demo1,
+        myFilter,
         changeOptionEvent,
         confirmEvent,
         resetEvent
@@ -82,7 +102,7 @@
   
   <style scoped>
   .my-filter-complex {
-    width: 260px;
+    width: 380px;
     padding: 5px 15px 10px 15px;
   }
   .my-filter-complex .my-fc-type {
@@ -91,5 +111,9 @@
   .my-filter-complex .my-fc-footer {
     text-align: center;
     margin-top: 10px;
+  }
+  .my-fc-name .vxe-input {
+    float: left;
+    width: 150px;
   }
   </style>

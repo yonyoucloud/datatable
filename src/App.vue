@@ -1,5 +1,7 @@
 <template>
   <div>
+    <i v-if="loadingStat" class="vxe-icon-spinner roll"></i>
+    <div v-if="showStat" id="statChart" style="height: 200px;"></div>
     <vxe-form>
       <vxe-form-item title="当前表">
         <vxe-select v-model="table" placeholder="请选择表名" :options="tables" clearable filterable :loading="loadingTables" @change="changeTable"></vxe-select>
@@ -14,6 +16,7 @@ import { ref, onMounted, reactive } from 'vue'
 import VXETable, { config } from 'vxe-table'
 import FilterComplex from './components/FilterComplex.vue'
 import axios from 'axios'
+import * as echarts from 'echarts'
 
 const baseURL = window.CONFIG && window.CONFIG.apiHost || 'http://localhost:8889/'
 
@@ -57,6 +60,8 @@ const tables = []
 
 const tableContents = ref([])
 const loadingContents = ref(false)
+const loadingStat = ref(false)
+const showStat = ref(false)
 const pagerConfig = ref({ 
   enabled: true,
   background: true,
@@ -68,8 +73,13 @@ const pagerConfig = ref({
 const tableColumns = ref([])
 const sortField = ref(""), sortOrder = ref("")
 let filterOptions = new Map()
+let statProperty = ""
 
-// 模拟分页接口
+const initVar = () => {
+  showStat.value = false
+  statProperty = ""
+}
+
 const getTableContents = async () => {
   try {
     loadingContents.value = true
@@ -110,12 +120,96 @@ const handlePagerChange = ({ currentPage, pageSize }) => {
 
 const handleFilterChange = ({ column, property, values, datas, filterList, $event }) => {
   if (datas.length > 0) {
-    const { type, name } = datas[0]
-    filterOptions.set(property, { type: type, name: name })
+    const { type, value1, value2, openstat } = datas[0]
+    filterOptions.set(property, { type: type, value1: value1, value2: value2 })
+    getStatData(openstat, property)
   } else {
     filterOptions.delete(property)
   }
   getTableContents()
+}
+
+const getStatData = async (openstat, property) => {
+  if (!openstat && statProperty == "") {
+    return
+  }
+  try {
+    if (!openstat && statProperty != "") {
+      property = statProperty
+    }
+    statProperty = property
+    loadingStat.value = true
+    showStat.value = true
+    const response = await axios.post(baseURL + 'api/v1/get/table/stat/' + table.value, {
+      property: statProperty,
+      filter: JSON.stringify(Object.fromEntries(filterOptions))
+    })
+    const data = response.data.data
+    
+    let xData = [], yData = []
+    for (let index = 0; index < data.length; index++) {
+      xData.push(data[index].start_time + '~' + data[index].end_time)
+      yData.push(data[index].record_count)
+    }
+
+    let statOption = {
+      title: {
+        text: "分时统计"
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      grid: {
+        left: '1%',
+        right: '1%',
+        bottom: '0%',
+        top: '20%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'category',
+        data: xData,
+        axisTick: {
+          alignWithLabel: true
+        },
+        // axisLabel: {
+        //   interval: 0,
+        //   rotate: 45, // 倾斜度 -90 至 90 默认为0
+        //   margin: 2,
+        //   textStyle: {
+        //     fontWeight: "bolder",
+        //     color: "#000000"
+        //   }
+        // }
+      },
+      yAxis: [
+        {
+          type: 'value'
+        }
+      ],
+      series: [
+        {
+          name: "写入量",
+          type: 'bar',
+          barWidth: '40%',
+          data: yData,
+        }
+      ],
+    }
+
+    let statChart = echarts.init(document.getElementById("statChart"))
+    statChart.setOption(statOption)
+    window.onresize = function() {
+      statChart.resize()
+    }
+  } catch (error) {
+    openMessage({ content: error, status: 'error' })
+  } finally {
+    loadingStat.value = false
+  }
 }
 
 const gridOptions = reactive({
@@ -172,6 +266,7 @@ const changeTable = () => {
   if (table.value == null || table.value == "") {
     return
   }
+  initVar()
   getFields()
 }
 

@@ -22,7 +22,7 @@ HOST_OS = $(shell which go >/dev/null 2>&1 && go env GOOS)
 ARCH ?= $(HOST_ARCH)
 OS ?= $(HOST_OS)
 # 打arm包时强制一下OS，否则Mac下生成的无法在linux arm中运行
-OS = linux
+#OS = linux
 ifeq ($(ARCH),)
     $(error mandatory variable ARCH is empty, either set it when calling the command or make sure 'go env GOARCH' works)
 endif
@@ -60,6 +60,10 @@ build-be:  ## 编译 datatable 后端
 		GOARCH=$(ARCH) \
 		go build -ldflags "$(datatable_LDFLAGS)" -o ../deploy/$(ARCH)/datatable ./cmd
 
+.PHONY: install-fe
+install-fe:  ## 安装 datatable 前端依赖
+	@npm install
+
 .PHONY: build-fe
 build-fe:  ## 编译 datatable 前端
 	@npm run build
@@ -69,6 +73,11 @@ run-be:  ## 运行 datatable 后端
 	@cd backend && \
 		go mod tidy && \
 		go run -ldflags "$(datatable_LDFLAGS)" ./cmd
+
+.PHONY: run
+run:  ## 运行 datatable
+	@cd deploy && \
+     	./$(ARCH)/datatable
 
 .PHONY: run-fe
 run-fe:  ## 运行 datatable 前端
